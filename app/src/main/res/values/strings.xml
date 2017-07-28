@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Simple Notes</string>
+    <string name="create_sample_data">Create Sample Data</string>
+    <string name="delete_all_notes">Delete All Notes</string>
+    <string name="all_deleted">All notes deleted.</string>
+    <string name="are_you_sure">Are you sure?</string>
+</resources>
