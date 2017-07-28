@@ -23,6 +23,8 @@ public class NotesProvider extends ContentProvider{
 
     private static final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
+    public static final String CONTENT_ITEM_TYPE = "Note";
+
     static {
         matcher.addURI(AUTHORITY, BASE_PATH, NOTES);
         matcher.addURI(AUTHORITY, BASE_PATH + "/#", NOTE_ID);
@@ -42,6 +44,11 @@ public class NotesProvider extends ContentProvider{
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+
+        if(matcher.match(uri) == NOTE_ID){
+            selection = DBOpenHelpher.NOTE_ID + "=" + uri.getLastPathSegment();
+        }
+
         return database.query(DBOpenHelpher.TABLE_NOTES, DBOpenHelpher.ALL_COLUMNS, selection,
                 null, null, null, DBOpenHelpher.NOTE_CREATED + " DESC");
     }

@@ -1,23 +1,23 @@
 package com.example.simple_notes.simplenotes;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.widget.CursorAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -39,6 +39,16 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
         ListView list = (ListView) findViewById(android.R.id.list);
         list.setAdapter(cursorAdapter);
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                Intent intent = new Intent(MainActivity.this, NoteEditorActivity.class);
+                Uri uri = Uri.parse(NotesProvider.CONTENT_URI + "/" + id);
+                intent.putExtra(NotesProvider.CONTENT_ITEM_TYPE, uri);
+                startActivityForResult(intent, EDITOR_REQUEST_CODE);
+            }
+        });
+
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -46,8 +56,6 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelpher.NOTE_TEXT, noteText);
         Uri noteUri = getContentResolver().insert(NotesProvider.CONTENT_URI, values);
-
-        Log.d("MainActivity", "Inserted note " + noteUri.getLastPathSegment());
     }
 
     @Override
@@ -65,23 +73,12 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
         int id = item.getItemId();
 
         switch(id){
-            case R.id.action_create_sample:
-                insertSampleData();
-                break;
             case R.id.action_delete_all:
                 deleteAllNotes();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    //Sample Data Management
-    private void insertSampleData() {
-        insertNote("Test note");
-        insertNote("Multi-line\nnote");
-        insertNote("This is a very long note to test and see how the UI handles this length of note. We shall see");
-        reloadData();
     }
 
     private void reloadData() {
@@ -130,5 +127,12 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
     public void openEditorNewNote(View view) {
         Intent intent = new Intent(this, NoteEditorActivity.class);
         startActivityForResult(intent, EDITOR_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == EDITOR_REQUEST_CODE && resultCode == RESULT_OK){
+            reloadData();
+        }
     }
 }

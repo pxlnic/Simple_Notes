@@ -6,17 +6,27 @@
     android:padding="16dp"
     tools:context=".NoteEditorActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+    </android.support.design.widget.AppBarLayout>
+
     <EditText
         android:id="@+id/editText"
         android:layout_width="344dp"
         android:layout_height="495dp"
         android:ems="10"
         android:gravity="top"
-        android:inputType="text"
+        android:inputType="textMultiLine|textCapSentences"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:hint="@string/enter_note_here"/>
 
 </RelativeLayout>
